@@ -58,7 +58,6 @@ EuroScopePlugInExit(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 	
-	inst->ACir.clear();
 	inst->EuroInittime = 0;
 	Discord_Shutdown();
 	KillTimer(0, DISCORDTIMERID);

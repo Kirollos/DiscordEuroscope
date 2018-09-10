@@ -16,15 +16,8 @@ public:
 	DiscordEuroscopeExt();
 	virtual ~DiscordEuroscopeExt();
 	int EuroInittime;
-	std::list<const char*> ACir;
-	
-#ifdef EUROSCOPE31D
-	virtual void OnAircraftPositionUpdate (EuroScopePlugIn::CAircraft Aircraft);
-	virtual void OnAircraftDisconnect (EuroScopePlugIn::CAircraft Aircraft);
-#else
-	virtual void OnRadarTargetPositionUpdate(EuroScopePlugIn::CRadarTarget Aircraft);
-	virtual void OnFlightPlanDisconnect(EuroScopePlugIn::CFlightPlan Aircraft);
-#endif
+
+	int CountACinRange();
 	int CountTrackedAC();
 };
 

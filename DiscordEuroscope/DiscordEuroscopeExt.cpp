@@ -56,12 +56,12 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 	if (controller.IsController())
 	{
 		sprintf(tmp, "%s %.2fMHz", callsign, frequency);
-		sprintf(tmp2, "Aircraft tracked (%i of %i)", inst->CountTrackedAC(), inst->ACir.size());
+		sprintf(tmp2, "Aircraft tracked (%i of %i)", inst->CountTrackedAC(), inst->CountACinRange());
 	}
 	else
 	{
 		sprintf(tmp, "Observing as %s", callsign);
-		sprintf(tmp2, "Aircraft in range: %i", inst->ACir.size());
+		sprintf(tmp2, "Aircraft in range: %i", inst->CountACinRange());
 	}
 	discordPresence.details = tmp;
 	discordPresence.state = tmp2;
@@ -72,62 +72,48 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 	delete tmp2;
 }
 
-#ifdef EUROSCOPE31D
-void DiscordEuroscopeExt::OnAircraftPositionUpdate(EuroScopePlugIn::CAircraft Aircraft)
-#else
-void DiscordEuroscopeExt::OnRadarTargetPositionUpdate(EuroScopePlugIn::CRadarTarget Aircraft)
-#endif
-{
-	bool found = false;
-	const char* callsign = Aircraft.GetCallsign();
-	for(std::list<const char*>::iterator it = this->ACir.begin(); it != this->ACir.end(); it ++)
-	{
-		if(strcmp(*it, callsign) == 0)
-		{
-			found = true;
-			break;
-		}
-	}
-	if(!found)
-	{
-		//if(Aircraft.GetSectorEntryMinutes() == 0)
-		this->ACir.push_back(callsign);
-	}
-}
 
-#ifdef EUROSCOPE31D
-void DiscordEuroscopeExt::OnAircraftDisconnect(EuroScopePlugIn::CAircraft Aircraft)
-#else
-void DiscordEuroscopeExt::OnFlightPlanDisconnect(EuroScopePlugIn::CFlightPlan Aircraft)
-#endif
+int DiscordEuroscopeExt::CountACinRange()
 {
-	bool found = false;
-	const char* callsign = Aircraft.GetCallsign();
-	for(std::list<const char*>::iterator it = this->ACir.begin(); it != this->ACir.end(); it ++)
+	int count = 0;
+#ifdef EUROSCOPE31D
+	EuroScopePlugIn::CAircraft ac = AircraftSelectFirst();
+#else
+	EuroScopePlugIn::CRadarTarget ac = RadarTargetSelectFirst();
+#endif
+	while (ac.IsValid())
 	{
-		if(strcmp(*it, callsign) == 0)
-		{
-			found = true;
-			break;
-		}
+		count++;
+#ifdef EUROSCOPE31D
+		ac = AircraftSelectNext(ac);
+#else
+		ac = RadarTargetSelectNext(ac);
+#endif
 	}
-	if(found)
-	{
-		this->ACir.remove(callsign);
-	}
+	return count;
 }
 
 int DiscordEuroscopeExt::CountTrackedAC()
 {
 	int count = 0;
-	for(std::list<const char*>::iterator it = this->ACir.begin(); it != this->ACir.end(); it ++)
+#ifdef EUROSCOPE31D
+	EuroScopePlugIn::CAircraft ac = AircraftSelectFirst();
+#else
+	EuroScopePlugIn::CRadarTarget ac = RadarTargetSelectFirst();
+#endif
+	while (ac.IsValid())
 	{
 #ifdef EUROSCOPE31D
-		if(this->AircraftSelect(*it).GetTrackingControllerIsMe() == true)
+		if(ac.GetTrackingControllerIsMe() == true)
 #else
-		if (this->RadarTargetSelect(*it).GetCorrelatedFlightPlan().GetTrackingControllerIsMe() == true)
+		if(ac.GetCorrelatedFlightPlan().GetTrackingControllerIsMe() == true)
 #endif
 			count++;
+#ifdef EUROSCOPE31D
+		ac = AircraftSelectNext(ac);
+#else
+		ac = RadarTargetSelectNext(ac);
+#endif
 	}
 	return count;
 }
