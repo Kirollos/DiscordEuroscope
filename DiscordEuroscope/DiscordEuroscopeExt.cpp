@@ -2,7 +2,7 @@
 #include "DiscordEuroscopeExt.h"
 
 
-DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, "Discord Euroscope", "1.0.0", "Kirollos Nashaat", "https://github.com/Kirollos/DiscordEuroscope")
+DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, "Discord Euroscope", "1.1.0", "Kirollos Nashaat", "https://github.com/Kirollos/DiscordEuroscope")
 {
 	DiscordEventHandlers handlers;
 	memset(&handlers, 0, sizeof(handlers));
@@ -122,7 +122,7 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 		if (inst->tracklist.size() > 0) {
 			sprintf(tmp3, "Total tracks: %i", inst->tracklist.size());
 			discordPresence.smallImageText = tmp3;
-			discordPresence.smallImageKey = "es";
+			discordPresence.smallImageKey = "ttrks";
 		}
 	}
 	else
