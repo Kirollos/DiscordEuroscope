@@ -43,6 +43,7 @@
 
 EuroScopePlugIn::CPlugIn *pMyPlugIn = nullptr;
 DiscordEuroscopeExt* inst = nullptr;
+UINT_PTR DISCORDTIMERID = 0;
 
 void __declspec (dllexport)
 EuroScopePlugInInit(EuroScopePlugIn::CPlugIn ** ppPlugInInstance)
@@ -90,6 +91,6 @@ CDiscordEuroscopeApp theApp;
 BOOL CDiscordEuroscopeApp::InitInstance()
 {
 	CWinApp::InitInstance();
-	SetTimer(0, DISCORDTIMERID, 1000, DiscordTimer);
+	DISCORDTIMERID = SetTimer(0, 0, 1000, DiscordTimer);
 	return TRUE;
 }
