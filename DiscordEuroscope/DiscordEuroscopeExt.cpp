@@ -149,11 +149,11 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 											#if RADIO_CALLSIGN_MAIN == FALSE
 														inst->RadioCallsigns[callsign].c_str();
 											#else
-														callsign;
+														inst->RadioCallsigns[callsign].length() ? callsign : "";
 											#endif
 		sprintf_s(tmp, 100, "%s %.3fMHz", 
 											#if RADIO_CALLSIGN_MAIN == TRUE
-														inst->RadioCallsigns[callsign].c_str()
+														inst->RadioCallsigns[callsign].length() ? inst->RadioCallsigns[callsign].c_str() : callsign
 											#else
 													callsign
 											#endif

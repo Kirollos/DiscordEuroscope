@@ -22,7 +22,7 @@
 #define PRESENCE_LARGE_IMAGE_KEY	("es")
 #define PRESENCE_SMALL_IMAGE_KEY	("ttrks")
 
-#define RADIO_CALLSIGN_MAIN			TRUE	// TRUE		-	Main title will include the radio callsign alongside the primary frequency.
+#define RADIO_CALLSIGN_MAIN			FALSE	// TRUE		-	Main title will include the radio callsign alongside the primary frequency.
 											// FALSE	-	Main title will include the actual callsign alongside the primary frequency.
 
 #define SWEATBOX_BYPASS				FALSE	// TRUE		-	Bypass sweatbox detection as if it is a normal connection
