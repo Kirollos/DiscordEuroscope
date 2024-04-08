@@ -14,31 +14,32 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.If not, see < https://www.gnu.org/licenses/>.
 */
-// DiscordEuroscope.h : main header file for the DiscordEuroscope DLL
-//
 
-#pragma once
+#include "stdafx.h"
+#include "ConfigData.h"
 
-#ifndef __AFXWIN_H__
-	#error "include 'stdafx.h' before including this file for PCH"
-#endif
-
-#include "resource.h"		// main symbols
-
-
-// CDiscordEuroscopeApp
-// See DiscordEuroscope.cpp for the implementation of this class
-//
-
-class CDiscordEuroscopeApp : public CWinApp
+namespace DiscordEuroScope_Configuration
 {
-public:
-	CDiscordEuroscopeApp();
+	ConfigData::ConfigData()
+	{
+		this->Cleanup();
+	}
 
-// Overrides
-public:
-	virtual BOOL InitInstance();
-
-	DECLARE_MESSAGE_MAP()
-};
-
+	void ConfigData::Cleanup()
+	{
+		this->discord_appid = "";
+		this->discord_presence_large_image_key = "";
+		this->discord_presence_small_image_key = "";
+		this->sweatbox_bypass = false;
+		this->RadioCallsigns.clear();
+		for (int i = 0; i < 7; i++)
+		{
+			this->states[i].details = "";
+			this->states[i].presence_large_image_key = "";
+			this->states[i].presence_large_image_text = "";
+			this->states[i].presence_small_image_key = "";
+			this->states[i].presence_small_image_text = "";
+			this->states[i].used = false;
+		}
+	}
+}

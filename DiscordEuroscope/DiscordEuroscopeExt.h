@@ -1,5 +1,5 @@
 /*
-	Copyright(C) 2023 Kirollos Nashaat
+	Copyright(C) 2023-2024 Kirollos Nashaat
 
 	This program is free software : you can redistribute it and /or modify
 	it under the terms of the GNU General Public License as published by
@@ -15,12 +15,9 @@
 	along with this program.If not, see < https://www.gnu.org/licenses/>.
 */
 #pragma once
-#ifdef EUROSCOPE31D
-#include "inc\\3.1d\\EuroScopePlugIn.h"
-#else
 #include "inc\\3.2\\EuroScopePlugIn.h"
-#endif
 #include "inc\\discord_rpc.h"
+#include "ConfigManager.h"
 #include <vector>
 #include <map>
 #include <fstream>
@@ -33,16 +30,16 @@ class DiscordEuroscopeExt : public EuroScopePlugIn::CPlugIn
 public:
 	DiscordEuroscopeExt();
 	virtual ~DiscordEuroscopeExt();
+	virtual bool OnCompileCommand(const char* sCommandLine);
 	int EuroInittime;
 
 	int CountACinRange();
 	int CountTrackedAC();
-	std::map<std::string, std::string> RadioCallsigns;
 	std::vector<std::string> tracklist;
+	DiscordEuroScope_Configuration::ConfigManager config;
 };
 
-extern EuroScopePlugIn::CPlugIn *pMyPlugIn;
-extern DiscordEuroscopeExt* inst;
+extern DiscordEuroscopeExt* pMyPlugIn;
 
 //#define DISCORDTIMERID (0xb00b)
 extern UINT_PTR DISCORDTIMERID;
