@@ -184,8 +184,8 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 		{"rcallsign", radio_callsign},
 		{"frequency", freq_str},
 		{"current_tracked", std::to_string(pMyPlugIn->CountTrackedAC())},
-		{"total_tracked", std::to_string(pMyPlugIn->CountACinRange())},
-		{"total_inrange", std::to_string(pMyPlugIn->tracklist.size())}
+		{"total_inrange", std::to_string(pMyPlugIn->CountACinRange())},
+		{"total_tracked", std::to_string(pMyPlugIn->tracklist.size())}
 	};
 
 	presence_small_image_key = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].presence_small_image_key, data.states[State_Direct].presence_small_image_key), data.discord_presence_small_image_key);
