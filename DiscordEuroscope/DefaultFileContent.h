@@ -54,7 +54,7 @@
                 \"presence_large_image_key\" : \"\",\r\
                 \"state\" : \"Controlling ({current_tracked} of {total_inrange})\",\r\
                 \"details\" : \"{rcallsign} {frequency}MHz\",\r\
-                \"presence_small_image_text\" : \"Total trakcs: {total_tracked}\",\r\
+                \"presence_small_image_text\" : \"Total tracks: {total_tracked}\",\r\
                 \"presence_large_image_text\" : \"{callsign}\"\r\
             },\r\
             \r\
