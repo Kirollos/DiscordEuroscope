@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "ConfigManager.h"
 #include "MessageFormatter.h"
+#include "ESEHandler.h"
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -132,6 +133,24 @@ namespace DiscordEuroScope_Configuration
 
 	void ConfigManager::LoadRadioCallsigns()
 	{
+		if (json_document.HasMember("load_from_ese")) {
+			if (json_document["load_from_ese"].IsBool() && json_document["load_from_ese"].GetBool() && json_document["path_to_ese"].IsString())
+			{
+				std::string relative_to_full_path;
+				std::string relative_path = json_document["path_to_ese"].GetString();
+				if (relative_path[1] == ':')
+					relative_to_full_path = relative_path;
+				else
+					relative_to_full_path = this->file_path.substr(0, this->file_path.find_last_of('\\') + 1) + relative_path;
+				if (ESEHandler::LocateESEFile(relative_to_full_path))
+				{
+					int p = ESEHandler::ParsePositions();
+					ESEHandler::GetRadioCallsigns(data.RadioCallsigns);
+					return;
+				}
+			}
+		}
+
 		assert(json_document["radio_callsigns"].IsObject());
 		data.RadioCallsigns.clear();
 		for (auto& it : json_document["radio_callsigns"].GetObject())
