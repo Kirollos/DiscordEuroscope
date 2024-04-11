@@ -48,6 +48,9 @@
     <ClCompile Include="MessageFormatter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ESEHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DiscordEuroscope.h">
@@ -189,6 +192,9 @@
       <Filter>Header Files\DiscordRPC</Filter>
     </ClInclude>
     <ClInclude Include="MessageFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ESEHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
