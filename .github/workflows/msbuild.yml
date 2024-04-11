@@ -45,7 +45,7 @@ jobs:
 
     - name: Fetch date and time
       run: |
-        $NOW=& (Get-Date).ToUniversalTime().ToString('yyyyMMdd-hhmmZ')
+        $NOW= (Get-Date).ToUniversalTime().ToString('yyyyMMdd-hhmmZ')
         echo "NOW=$NOW" >> $env:GITHUB_ENV
     
     - name: Rename DLL
