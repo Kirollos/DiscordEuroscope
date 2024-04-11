@@ -58,5 +58,5 @@ jobs:
         target_commitish: ${{github.sha}}
         prerelease: true
         #draft: true
-        files: D:/out/DiscordEuroscope-1.3.0-pre-${{github.sha}}.dll
+        files: D:/out/DiscordEuroscope-1.3.0-pre-${{env.NOW}}.dll
         
