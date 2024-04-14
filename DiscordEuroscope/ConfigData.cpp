@@ -31,6 +31,7 @@ namespace DiscordEuroScope_Configuration
 		this->discord_presence_large_image_key = "";
 		this->discord_presence_small_image_key = "";
 		this->sweatbox_bypass = false;
+		this->loaded_from_ese = false;
 		this->RadioCallsigns.clear();
 		for (int i = 0; i < 7; i++)
 		{

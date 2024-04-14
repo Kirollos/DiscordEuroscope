@@ -57,7 +57,7 @@ namespace DiscordEuroScope_Configuration
 		void Cleanup(void);
 		void LoadRadioCallsigns(void);
 		void GenerateConfigFile(std::string filepath);
-		void FindRadioCallsign(std::string callsign, std::string& radio_callsign);
+		void FindRadioCallsign(std::string callsign, std::string frequency, std::string& radio_callsign);
 	};
 }
 

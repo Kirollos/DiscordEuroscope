@@ -176,8 +176,9 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 
 	std::string freq_str(8, 0);
 	std::snprintf((char*)freq_str.c_str(), 8, "%.3f", frequency);
+	freq_str = std::string(freq_str, 0, strlen(freq_str.c_str()));
 	std::string radio_callsign;
-	pMyPlugIn->config.FindRadioCallsign(callsign, radio_callsign);
+	pMyPlugIn->config.FindRadioCallsign(callsign, freq_str, radio_callsign);
 	const std::map<std::string, std::string> Dictionary =
 	{
 		{"callsign", callsign},

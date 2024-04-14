@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ESEHandler.h"
+#include "ConfigData.h"
 #include <filesystem>
 #include <fstream>
 
@@ -58,11 +59,27 @@ int ESEHandler::ParsePositions(void)
 	return positions.size();
 }
 
-void ESEHandler::GetRadioCallsigns(std::map<std::string, std::string>& rcs)
+void ESEHandler::GetRadioCallsigns(RadioCallsigns_t& rcs)
 {
+	using namespace DiscordEuroScope_Configuration;
 	rcs.clear();
 	for (auto& pos : positions)
 	{
-		rcs.insert(std::pair<std::string, std::string>(pos.callsign, pos.radio_callsign));
+		DiscordEuroScope_Configuration::RadioCallsignElement_t element;
+		element.callsign = pos.callsign;
+		element.frequency = pos.frequency;
+		element.icao = pos.callsign.substr(0, pos.callsign.find_first_of('_'));
+		element.radio_callsign = pos.radio_callsign;
+		bool flag = false;
+		for (auto& it : rcs)
+		{
+			if (it.callsign == element.callsign /* TEMP DISABLE || (it.icao == element.icao && it.frequency == element.frequency)*/)
+			{
+				flag = true;
+				break;
+			}
+		}
+		if(!flag)
+			rcs.push_back(element);
 	}
 }

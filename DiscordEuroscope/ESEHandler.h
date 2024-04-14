@@ -19,7 +19,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "ConfigData.h"
 
+using DiscordEuroScope_Configuration::RadioCallsigns_t;
 
 struct ESEPositionItem
 {
@@ -36,5 +38,5 @@ private:
 public:
 	static bool LocateESEFile(std::string relative_path_to_ese);
 	static int ParsePositions(void);
-	static void GetRadioCallsigns(std::map<std::string, std::string>& rcs);
+	static void GetRadioCallsigns(RadioCallsigns_t& rcs);
 };

@@ -27,6 +27,11 @@
 
 const char default_file_content[] = DEFAULT_FILE_CONTENT;
 
+// caching so we don't regex every time
+static std::string last_fetch_callsign = "";
+static std::string last_returned_rcallsign = "";
+static std::string last_fetch_frequency = "";
+
 namespace DiscordEuroScope_Configuration
 {
 	ConfigManager::ConfigManager()
@@ -129,56 +134,93 @@ namespace DiscordEuroScope_Configuration
 		_ready = false;
 		json_document.GetAllocator().Clear();
 		data.Cleanup();
+		last_fetch_callsign = "";
+		last_returned_rcallsign = "";
+		last_fetch_frequency = "";
 	}
 
 	void ConfigManager::LoadRadioCallsigns()
 	{
-		if (json_document.HasMember("load_from_ese")) {
-			if (json_document["load_from_ese"].IsBool() && json_document["load_from_ese"].GetBool() && json_document["path_to_ese"].IsString())
+		if (!json_document["radio_callsigns"].IsObject()) return;
+		auto& RadioCallsignObj = json_document["radio_callsigns"];
+		auto& RadioCallsignConfigObj = RadioCallsignObj["config"];
+		if (RadioCallsignConfigObj.HasMember("load_from_ese")) {
+			if (RadioCallsignConfigObj["load_from_ese"].IsBool() && RadioCallsignConfigObj["load_from_ese"].GetBool())
 			{
-				std::string relative_to_full_path;
-				std::string relative_path = json_document["path_to_ese"].GetString();
+				std::string relative_to_absolute_path;
+				std::string relative_path = 
+					RadioCallsignConfigObj.HasMember("path_to_ese") && RadioCallsignConfigObj["path_to_ese"].IsString()
+					? RadioCallsignConfigObj["path_to_ese"].GetString()
+					: ".\\";
 				if (relative_path[1] == ':')
-					relative_to_full_path = relative_path;
+					relative_to_absolute_path = relative_path;
 				else
-					relative_to_full_path = this->file_path.substr(0, this->file_path.find_last_of('\\') + 1) + relative_path;
-				if (ESEHandler::LocateESEFile(relative_to_full_path))
+					relative_to_absolute_path = this->file_path.substr(0, this->file_path.find_last_of('\\') + 1) + relative_path;
+				if (ESEHandler::LocateESEFile(relative_to_absolute_path))
 				{
-					int p = ESEHandler::ParsePositions();
-					ESEHandler::GetRadioCallsigns(data.RadioCallsigns);
-					return;
+					if (ESEHandler::ParsePositions() > 0) {
+						data.loaded_from_ese = true;
+						ESEHandler::GetRadioCallsigns(data.RadioCallsigns);
+						return;
+					}
 				}
 			}
 		}
 
-		assert(json_document["radio_callsigns"].IsObject());
+		assert(RadioCallsignObj.HasMember("custom") && RadioCallsignObj["custom"].IsArray());
 		data.RadioCallsigns.clear();
-		for (auto& it : json_document["radio_callsigns"].GetObject())
+		for (auto& it : RadioCallsignObj["custom"].GetArray())
 		{
-			if (it.name.GetType() == rapidjson::kStringType && it.value.GetType() == rapidjson::kStringType)
+			if (it.IsObject())
 			{
-				data.RadioCallsigns.insert(std::pair<std::string, std::string>(it.name.GetString(), it.value.GetString()));
+				RadioCallsignElement_t element;
+				if (it.HasMember("callsign") && it["callsign"].IsString())
+					element.callsign = std::string(it["callsign"].GetString());
+				if (it.HasMember("frequency") && it["frequency"].IsString())
+					element.frequency = std::string(it["frequency"].GetString());
+				if (it.HasMember("rcallsign") && it["rcallsign"].IsString())
+					element.radio_callsign = std::string(it["rcallsign"].GetString());
+
+				element.icao = element.callsign.substr(0, element.callsign.find_first_of('_'));
+				data.RadioCallsigns.push_back(element);
 			}
 		}
 	}
 
-	void ConfigManager::FindRadioCallsign(std::string callsign, std::string& radio_callsign)
+	void ConfigManager::FindRadioCallsign(std::string callsign, std::string frequency, std::string& radio_callsign)
 	{
 		// caching so we don't regex every time
-		static std::string last_fetch_callsign = "";
-		static std::string last_returned_rcallsign = "";
-		if (callsign == last_fetch_callsign)
+		if (callsign == last_fetch_callsign && frequency == last_fetch_frequency)
 		{
 			radio_callsign = last_returned_rcallsign; // return cached result
 			return;
 		}
 		last_fetch_callsign = callsign;
+		last_fetch_frequency = frequency;
+		std::string icao = callsign.substr(0, callsign.find_first_of('_'));
+
+		if (data.loaded_from_ese)
+		{
+			for (auto& it : data.RadioCallsigns)
+			{
+				if (it.icao == icao && it.frequency == frequency)
+				{
+					radio_callsign = it.radio_callsign;
+					last_returned_rcallsign = radio_callsign;
+					return;
+				}
+			}
+			last_returned_rcallsign = radio_callsign = callsign;
+			return;
+		}
+
 		for (auto& it : data.RadioCallsigns)
 		{
-			std::regex rgx(std::string(it.first));
+			std::regex rgx(std::string(it.callsign));
 			std::smatch rgx_match;
 			if(!std::regex_search(callsign, rgx_match, rgx)) continue;
-			radio_callsign = it.second;
+			if (!it.frequency.empty() && !(it.frequency == frequency && it.icao == icao)) continue;
+			radio_callsign = it.radio_callsign;
 
 			std::vector<std::string> dict;
 			for (int rgx_it = 1; rgx_it < rgx_match.size(); rgx_it++)
