@@ -73,16 +73,10 @@
             \"load_from_ese\": false,\r\
             \"path_to_ese\" : \"..\\\\..\\\\\"\r\
         },\r\
-        \"custom\" : [\r\
-            {\r\
-                \"callsign\": \"^HECC_CTR$\",\r\
-                \"rcallsign\" : \"Cairo Control Bandbox\"\r\
-            },\r\
-            {\r\
-                \"callsign\": \"^HECC_(\\\\d+)(?:_)CTR$\",\r\
-                \"rcallsign\" : \"Cairo Control ACC $0\"\r\
-            }\r\
-        ]\r\
+        \"custom_callsigns\": {\r\
+            \"^HECC_CTR$\": \"Cairo Control Bandbox\",\r\
+            \"^HECC_(\\\\d+)(?:_)CTR$\" : \"Cairo Control ACC $0\"\r\
+        }\r\
     }\r\
 }\r\
 ")

@@ -167,23 +167,17 @@ namespace DiscordEuroScope_Configuration
 			}
 		}
 
-		assert(RadioCallsignObj.HasMember("custom") && RadioCallsignObj["custom"].IsArray());
+		assert(RadioCallsignObj.HasMember("custom_callsigns") && RadioCallsignObj["custom_callsigns"].IsObject());
 		data.RadioCallsigns.clear();
-		for (auto& it : RadioCallsignObj["custom"].GetArray())
+		auto& obj = RadioCallsignObj["custom_callsigns"].GetObjectA();
+		for (auto& it : obj)
 		{
-			if (it.IsObject())
-			{
-				RadioCallsignElement_t element;
-				if (it.HasMember("callsign") && it["callsign"].IsString())
-					element.callsign = std::string(it["callsign"].GetString());
-				if (it.HasMember("frequency") && it["frequency"].IsString())
-					element.frequency = std::string(it["frequency"].GetString());
-				if (it.HasMember("rcallsign") && it["rcallsign"].IsString())
-					element.radio_callsign = std::string(it["rcallsign"].GetString());
-
-				element.icao = element.callsign.substr(0, element.callsign.find_first_of('_'));
-				data.RadioCallsigns.push_back(element);
-			}
+			RadioCallsignElement_t element;
+			assert(it.name.IsString() && it.value.IsString());
+			element.callsign = it.name.GetString();
+			element.radio_callsign = it.value.GetString();
+			element.icao = element.callsign.substr(0, element.callsign.find_first_of('_'));
+			data.RadioCallsigns.push_back(element);
 		}
 	}
 
