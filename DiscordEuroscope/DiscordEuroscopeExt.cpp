@@ -103,6 +103,7 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 	discordPresence.startTimestamp = pMyPlugIn->EuroInittime;
 	
 	DiscordButton buttons[2] = { nullptr, nullptr };
+	Button configButtons[2];
 
 	switch (pMyPlugIn->GetConnectionType())
 	{
@@ -114,24 +115,27 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 		discordPresence.smallImageKey = ConfigData::LocalOrGlobal(data.states[State_Idle].presence_small_image_key, data.discord_presence_small_image_key).c_str();
 		discordPresence.smallImageText = data.states[State_Idle].presence_small_image_text.c_str();
 		discordPresence.state = data.states[State_Idle].state.c_str();
-		if (data.buttons[0].IsValid()) {
-			buttons[0] =
-			{
-				ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[0].label, data.buttons[0].label).c_str(),
-				ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[0].url, data.buttons[0].url).c_str()
-			};
+		configButtons[0] = Button(
+			ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[0].label, data.buttons[0].label),
+			ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[0].url, data.buttons[0].url)
+		);
+		configButtons[1] = Button(
+			ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[1].label, data.buttons[1].label),
+			ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[1].url, data.buttons[1].url)
+		);
+
+		if (configButtons[0].IsValid())
+		{
+			buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
 			// Nested condition because there will never be a single button in index 1.
-			if (data.buttons[1].IsValid()) {
-				buttons[1] = 
-				{
-					ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[1].label, data.buttons[1].label).c_str(),
-					ConfigData::LocalOrGlobal(data.states[State_Idle].buttons[1].url, data.buttons[1].url).c_str()
-				};
+			if (configButtons[1].IsValid())
+			{
+				buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
 			}
 			else {
 				buttons[1] = { "" , "" };
 			}
-		discordPresence.buttons = buttons;
+			discordPresence.buttons = buttons;
 		}
 		Discord_UpdatePresence(&discordPresence);
 		Discord_RunCallbacks();
@@ -143,24 +147,27 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 		discordPresence.smallImageKey = ConfigData::LocalOrGlobal(data.states[State_Playback].presence_small_image_key, data.discord_presence_small_image_key).c_str();
 		discordPresence.smallImageText = data.states[State_Playback].presence_small_image_text.c_str();
 		discordPresence.state = data.states[State_Playback].state.c_str();
-		if (data.buttons[0].IsValid()) {
-			buttons[0] =
-			{
-				ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[0].label, data.buttons[0].label).c_str(),
-				ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[0].url, data.buttons[0].url).c_str()
-			};
+		configButtons[0] = Button(
+			ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[0].label, data.buttons[0].label),
+			ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[0].url, data.buttons[0].url)
+		);
+		configButtons[1] = Button(
+			ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[1].label, data.buttons[1].label),
+			ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[1].url, data.buttons[1].url)
+		);
+
+		if (configButtons[0].IsValid())
+		{
+			buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
 			// Nested condition because there will never be a single button in index 1.
-			if (data.buttons[1].IsValid()) {
-				buttons[1] =
-				{
-					ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[1].label, data.buttons[1].label).c_str(),
-					ConfigData::LocalOrGlobal(data.states[State_Playback].buttons[1].url, data.buttons[1].url).c_str()
-				};
+			if (configButtons[1].IsValid())
+			{
+				buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
 			}
 			else {
 				buttons[1] = { "" , "" };
 			}
-		discordPresence.buttons = buttons;
+			discordPresence.buttons = buttons;
 		}
 		Discord_UpdatePresence(&discordPresence);
 		Discord_RunCallbacks();
@@ -174,23 +181,27 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 		discordPresence.smallImageKey = ConfigData::LocalOrGlobal(data.states[State_Sweatbox].presence_small_image_key, data.discord_presence_small_image_key).c_str();
 		discordPresence.smallImageText = data.states[State_Sweatbox].presence_small_image_text.c_str();
 		discordPresence.state = data.states[State_Sweatbox].state.c_str();
-		if (data.buttons[0].IsValid()) {
-			buttons[0] =
+		configButtons[0] = Button(
+			ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[0].label, data.buttons[0].label),
+			ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[0].url, data.buttons[0].url)
+		);
+		configButtons[1] = Button(
+			ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[1].label, data.buttons[1].label),
+			ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[1].url, data.buttons[1].url)
+		);
+
+		if (configButtons[0].IsValid())
+		{
+			buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
+			// Nested condition because there will never be a single button in index 1.
+			if (configButtons[1].IsValid())
 			{
-				ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[0].label, data.buttons[0].label).c_str(),
-				ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[0].url, data.buttons[0].url).c_str()
-			};
-			if (data.buttons[1].IsValid()) {
-				buttons[1] =
-				{
-					ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[1].label, data.buttons[1].label).c_str(),
-					ConfigData::LocalOrGlobal(data.states[State_Sweatbox].buttons[1].url, data.buttons[1].url).c_str()
-				};
+				buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
 			}
 			else {
 				buttons[1] = { "" , "" };
 			}
-		discordPresence.buttons = buttons;
+			discordPresence.buttons = buttons;
 		}
 		Discord_UpdatePresence(&discordPresence);
 		Discord_RunCallbacks();
@@ -253,30 +264,35 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 	presence_small_image_text = ConfigData::LocalOrGlobal(data.states[use_state].presence_small_image_text, data.states[State_Direct].presence_small_image_text);
 	presence_large_image_text = ConfigData::LocalOrGlobal(data.states[use_state].presence_large_image_text, data.states[State_Direct].presence_large_image_text);
 
-	if (data.buttons[0].IsValid()) {
-		std::string button1_label = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[0].label, data.states[State_Direct].buttons[0].label), data.buttons[0].label);
-		MessageFormatter::formatmap(button1_label, Dictionary);
-		std::string button1_url = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[0].url, data.states[State_Direct].buttons[0].url), data.buttons[0].url);
-		MessageFormatter::formatmap(button1_url, Dictionary);
-		buttons[0] = {
-			button1_label.c_str(),
-			button1_url.c_str()
-		};
-		if (data.buttons[1].IsValid()) {
-			
-			std::string button2_label = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[1].label, data.states[State_Direct].buttons[1].label), data.buttons[1].label);
-			MessageFormatter::formatmap(button2_label, Dictionary);
-			std::string button2_url = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[1].url, data.states[State_Direct].buttons[1].url), data.buttons[1].url);
-			MessageFormatter::formatmap(button2_url, Dictionary);
-			buttons[1] = {
-				button2_label.c_str(),
-				button2_url.c_str()
-			};
+	std::string button1_label = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[0].label, data.states[State_Direct].buttons[0].label), data.buttons[0].label);
+	MessageFormatter::formatmap(button1_label, Dictionary);
+	std::string button1_url = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[0].url, data.states[State_Direct].buttons[0].url), data.buttons[0].url);
+	MessageFormatter::formatmap(button1_url, Dictionary);
+	configButtons[0] = Button(
+		button1_label,
+		button1_url
+	);			
+	std::string button2_label = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[1].label, data.states[State_Direct].buttons[1].label), data.buttons[1].label);
+	MessageFormatter::formatmap(button2_label, Dictionary);
+	std::string button2_url = ConfigData::LocalOrGlobal(ConfigData::LocalOrGlobal(data.states[use_state].buttons[1].url, data.states[State_Direct].buttons[1].url), data.buttons[1].url);
+	MessageFormatter::formatmap(button2_url, Dictionary);
+	configButtons[1] = Button(
+		button2_label.c_str(),
+		button2_url.c_str()
+	);
+
+	if (configButtons[0].IsValid())
+	{
+		buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
+		// Nested condition because there will never be a single button in index 1.
+		if (configButtons[1].IsValid())
+		{
+			buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
 		}
 		else {
 			buttons[1] = { "" , "" };
 		}
-	discordPresence.buttons = buttons;
+		discordPresence.buttons = buttons;
 	}
 
 	MessageFormatter::formatmap(state, Dictionary);

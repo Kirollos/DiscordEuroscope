@@ -55,7 +55,13 @@
                 \"state\" : \"Controlling ({current_tracked} of {total_inrange})\",\r\
                 \"details\" : \"{rcallsign} {frequency}MHz\",\r\
                 \"presence_small_image_text\" : \"Total tracks: {total_tracked}\",\r\
-                \"presence_large_image_text\" : \"{callsign}\"\r\
+                \"presence_large_image_text\" : \"{callsign}\",\r\
+                \"buttons\": [\r\
+                    {\r\
+                        \"label\": \"Callsign stats\",\r\
+                        \"url\" : \"https://stats.vatsim.net/search/{callsign}\"\r\
+                    }\r\
+                ]\r\
             },\r\
             \r\
             \"if_supervisor\": {\r\
@@ -69,10 +75,6 @@
         }\r\
     },\r\
     \"buttons\": [\r\
-        {\r\
-            \"label\": \"Callsign stats\",\r\
-            \"url\" : \"https://stats.vatsim.net/search/{callsign}\"\r\
-        },\r\
     ],\r\
     \"radio_callsigns\": {\r\
         \"config\": {\r\
