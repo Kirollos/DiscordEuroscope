@@ -70,11 +70,10 @@ DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopeP
 	this->EuroInittime = (int)time(NULL);
 	config.LoadRadioCallsigns();
 
-	char* dmsg = new char[100];
+	char dmsg[40] = { 0 };
 	int count = config.Data().RadioCallsigns.size();
-	sprintf_s(dmsg, 100, "Successfully parsed %i callsign%s", count, count == 1 ? "!" : "s!");
+	sprintf_s(dmsg, 40, "Successfully parsed %i callsign%s", count, count == 1 ? "!" : "s!");
 	DisplayUserMessage("Message", "DiscordEuroscope", dmsg, true, true, false, true, false);
-	delete[] dmsg;
 }
 
 
@@ -264,11 +263,10 @@ bool DiscordEuroscopeExt::OnCompileCommand(const char* sCommandLine)
 		this->EuroInittime = (int)time(NULL);
 		config.LoadRadioCallsigns();
 
-		char* dmsg = new char[100];
+		char dmsg[40] = { 0 };
 		int count = config.Data().RadioCallsigns.size();
-		sprintf_s(dmsg, 100, "Successfully parsed %i callsign%s", count, count == 1 ? "!" : "s!");
+		sprintf_s(dmsg, 40, "Successfully parsed %i callsign%s", count, count == 1 ? "!" : "s!");
 		DisplayUserMessage("Message", "DiscordEuroscope", dmsg, true, true, false, true, false);
-		delete[] dmsg;
 		return true;
 	}
 	return false;
