@@ -13,8 +13,8 @@
             \"presence_large_image_key\" : \"\",\r\
             \"state\" : \"\",\r\
             \"details\" : \"Idle\",\r\
-            \"presence_small_image_text\" : \"lol i'm idle small text\",\r\
-            \"presence_large_image_text\" : \"lol i'm idle large text\"\r\
+            \"presence_small_image_text\" : \"\",\r\
+            \"presence_large_image_text\" : \"\"\r\
         },\r\
         \"playback\": {\r\
             \"presence_small_image_key\": \"\",\r\
