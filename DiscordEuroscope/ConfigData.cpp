@@ -32,6 +32,8 @@ namespace DiscordEuroScope_Configuration
 		this->discord_presence_small_image_key = "";
 		this->sweatbox_bypass = false;
 		this->loaded_from_ese = false;
+		this->buttons[0] = Button();
+		this->buttons[1] = Button();
 		this->RadioCallsigns.clear();
 		for (int i = 0; i < 7; i++)
 		{
@@ -40,6 +42,8 @@ namespace DiscordEuroScope_Configuration
 			this->states[i].presence_large_image_text = "";
 			this->states[i].presence_small_image_key = "";
 			this->states[i].presence_small_image_text = "";
+			this->states[i].buttons[0] = Button();
+			this->states[i].buttons[1] = Button();
 			this->states[i].used = false;
 		}
 	}

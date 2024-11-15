@@ -68,6 +68,12 @@
             }\r\
         }\r\
     },\r\
+    \"buttons\": [\r\
+        {\r\
+            \"label\": \"Callsign stats\",\r\
+            \"url\" : \"https://stats.vatsim.net/search/{callsign}\"\r\
+        },\r\
+    ],\r\
     \"radio_callsigns\": {\r\
         \"config\": {\r\
             \"load_from_ese\": false,\r\

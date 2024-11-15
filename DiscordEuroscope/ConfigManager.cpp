@@ -72,6 +72,22 @@ namespace DiscordEuroScope_Configuration
 		data.discord_presence_small_image_key = json_document["discord_presence_small_image_key"].GetString();
 		assert(json_document["sweatbox_bypass"].IsBool());
 		data.sweatbox_bypass = json_document["sweatbox_bypass"].GetBool();
+
+		if (json_document.HasMember("buttons") && json_document["buttons"].IsArray())
+		{
+			auto& arr = json_document["buttons"].GetArray();
+			int len = arr.Size();
+			if (len > 2) {
+				len = 2;
+			}
+			for (int i = 0; i < len; i++)
+			{
+				auto& element = arr[i];
+				assert(arr[i]["label"].IsString());
+				assert(arr[i]["url"].IsString());
+				data.buttons[i] = Button(arr[i]["label"].GetString(), arr[i]["url"].GetString());
+			}
+		}
 		
 		assert(json_document["states"].IsObject());
 		assert(json_document["states"]["idle"].IsObject());
@@ -96,6 +112,22 @@ namespace DiscordEuroScope_Configuration
 			data.states[i].details = objects[i]["details"].GetString();
 			data.states[i].presence_small_image_text = objects[i]["presence_small_image_text"].GetString();
 			data.states[i].presence_large_image_text = objects[i]["presence_large_image_text"].GetString();
+
+			if (objects[i].HasMember("buttons") && objects[i]["buttons"].IsArray())
+			{
+				auto& arr = objects[i]["buttons"].GetArray();
+				int len = arr.Size();
+				if (len > 2) {
+					len = 2;
+				}
+				for (int j = 0; j < len; j++)
+				{
+					auto& element = arr[j];
+					assert(arr[j]["label"].IsString());
+					assert(arr[j]["url"].IsString());
+					data.states[i].buttons[j] = Button(arr[j]["label"].GetString(), arr[j]["url"].GetString());
+				}
+			}
 		}
 
 		for (int i = 4; i < 7; i++)
@@ -125,6 +157,22 @@ namespace DiscordEuroScope_Configuration
 			data.states[i].details = obj["details"].GetString();
 			data.states[i].presence_small_image_text = obj["presence_small_image_text"].GetString();
 			data.states[i].presence_large_image_text = obj["presence_large_image_text"].GetString();
+
+			if (obj.HasMember("buttons") && obj["buttons"].IsArray())
+			{
+				auto& arr = obj["buttons"].GetArray();
+				int len = arr.Size();
+				if (len > 2) {
+					len = 2;
+				}
+				for (int j = 0; j < len; j++)
+				{
+					auto& element = arr[j];
+					assert(arr[j]["label"].IsString());
+					assert(arr[j]["url"].IsString());
+					data.states[i].buttons[j] = Button(arr[j]["label"].GetString(), arr[j]["url"].GetString());
+				}
+			}
 		}
 		_ready = true;
 	}
