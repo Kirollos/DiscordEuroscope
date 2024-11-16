@@ -19,7 +19,6 @@
 #ifndef _CONFIGMANAGER_H_
 #define _CONFIGMANAGER_H_
 
-#include "config.h"
 #include <string>
 #include <vector>
 #include <map>

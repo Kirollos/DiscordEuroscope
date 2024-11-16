@@ -16,6 +16,7 @@
 */
 
 #include "stdafx.h"
+#include "inc/discord_rpc.h"
 #include "ConfigData.h"
 
 namespace DiscordEuroScope_Configuration
@@ -46,5 +47,11 @@ namespace DiscordEuroScope_Configuration
 			this->states[i].buttons[1] = Button();
 			this->states[i].used = false;
 		}
+	}
+
+	void Button::FillStruct(DiscordButton* refButton) const
+	{
+		refButton->label = label.c_str();
+		refButton->url = url.c_str();
 	}
 }

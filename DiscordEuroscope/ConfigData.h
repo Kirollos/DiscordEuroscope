@@ -19,10 +19,11 @@
 #ifndef _CONFIGDATA_H_
 #define _CONFIGDATA_H_
 
-#include "config.h"
 #include <string>
 #include <vector>
 #include <map>
+
+struct DiscordButton; // discord_rpc.h
 
 namespace DiscordEuroScope_Configuration
 {
@@ -52,6 +53,8 @@ namespace DiscordEuroScope_Configuration
 		{
 			return !label.empty() && !url.empty();
 		}
+
+		void FillStruct(DiscordButton* refButton) const;
 	};
 
 	enum States_Enum

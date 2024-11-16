@@ -16,6 +16,7 @@
 */
 
 #include "stdafx.h"
+#include "config.h"
 #include "ConfigManager.h"
 #include "MessageFormatter.h"
 #include "ESEHandler.h"

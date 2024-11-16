@@ -126,11 +126,11 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 
 		if (configButtons[0].IsValid())
 		{
-			buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
+			configButtons[0].FillStruct(buttons);
 			// Nested condition because there will never be a single button in index 1.
 			if (configButtons[1].IsValid())
 			{
-				buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
+				configButtons[1].FillStruct(buttons+1);
 			}
 			else {
 				buttons[1] = { "" , "" };
@@ -158,11 +158,11 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 
 		if (configButtons[0].IsValid())
 		{
-			buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
+			configButtons[0].FillStruct(buttons);
 			// Nested condition because there will never be a single button in index 1.
 			if (configButtons[1].IsValid())
 			{
-				buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
+				configButtons[1].FillStruct(buttons+1);
 			}
 			else {
 				buttons[1] = { "" , "" };
@@ -192,11 +192,11 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 
 		if (configButtons[0].IsValid())
 		{
-			buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
+			configButtons[0].FillStruct(buttons);
 			// Nested condition because there will never be a single button in index 1.
 			if (configButtons[1].IsValid())
 			{
-				buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
+				configButtons[1].FillStruct(buttons+1);
 			}
 			else {
 				buttons[1] = { "" , "" };
@@ -283,11 +283,11 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 
 	if (configButtons[0].IsValid())
 	{
-		buttons[0] = { configButtons[0].label.c_str(), configButtons[0].url.c_str() };
+		configButtons[0].FillStruct(buttons);
 		// Nested condition because there will never be a single button in index 1.
 		if (configButtons[1].IsValid())
 		{
-			buttons[1] = { configButtons[1].label.c_str(), configButtons[1].url.c_str() };
+			configButtons[1].FillStruct(buttons+1);
 		}
 		else {
 			buttons[1] = { "" , "" };
