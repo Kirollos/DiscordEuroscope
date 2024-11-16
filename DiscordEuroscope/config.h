@@ -18,12 +18,10 @@
 
 #define UPDATE_TIMER				(1000) // milliseconds
 #define CONFIG_FILENAME				"DiscordEuroscope_config.json"
+// No longer used by any logic in the code. Only used to be dumped in default .json config file.
 #define DISCORD_APPID				"477907858072272896"
 #define PRESENCE_LARGE_IMAGE_KEY	"es"
 #define PRESENCE_SMALL_IMAGE_KEY	"ttrks"
-
-#define SWEATBOX_BYPASS				FALSE	// TRUE		-	Bypass sweatbox detection as if it is a normal connection
-											// FALSE	-	Sweatbox detection will not include callsign/frequency/AC tracking.
 
 
 #include "DefaultFileContent.h"
