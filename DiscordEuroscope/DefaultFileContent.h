@@ -75,6 +75,14 @@
         }\r\
     },\r\
     \"buttons\": [\r\
+        {\r\
+            \"label\": \"Feedback\",\r\
+            \"url\" : \"mailto:info@vateg.net\"\r\
+        },\r\
+        {\r\
+            \"label\": \"Download Plugin\",\r\
+            \"url\" : \"https://github.com/Kirollos/DiscordEuroscope/\"\r\
+        }\r\
     ],\r\
     \"radio_callsigns\": {\r\
         \"config\": {\r\
