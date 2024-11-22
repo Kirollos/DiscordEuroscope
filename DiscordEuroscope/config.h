@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#define PLUGIN_VERSION				("1.3.0")
+
 #define UPDATE_TIMER				(1000) // milliseconds
 #define CONFIG_FILENAME				"DiscordEuroscope_config.json"
 // No longer used by any logic in the code. Only used to be dumped in default .json config file.

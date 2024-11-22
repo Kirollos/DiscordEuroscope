@@ -21,7 +21,7 @@
 #include "ConfigManager.h"
 #include "MessageFormatter.h"
 
-DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, "Discord Euroscope", "1.3.0", "Kirollos Nashaat", "GNU GPLv3")
+DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, "DiscordEuroscope", PLUGIN_VERSION, "Kirollos Nashaat", "GNU GPLv3")
 {
 	char DllPathFile[_MAX_PATH];
 	std::string RCPath;
