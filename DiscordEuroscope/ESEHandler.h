@@ -14,35 +14,29 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.If not, see < https://www.gnu.org/licenses/>.
 */
+
 #pragma once
-#include "inc\\3.2\\EuroScopePlugIn.h"
-#include "inc\\discord_rpc.h"
-#include "ConfigManager.h"
+#include <string>
 #include <vector>
 #include <map>
-#include <fstream>
+#include "ConfigData.h"
 
-#ifndef __E_KEK_H
-#define __E_KEK_H
+using DiscordEuroScope_Configuration::RadioCallsigns_t;
 
-class DiscordEuroscopeExt : public EuroScopePlugIn::CPlugIn
+struct ESEPositionItem
 {
-public:
-	DiscordEuroscopeExt();
-	virtual ~DiscordEuroscopeExt();
-	virtual bool OnCompileCommand(const char* sCommandLine);
-	int EuroInittime;
-
-	int CountACinRange();
-	int CountTrackedAC();
-	std::vector<std::string> tracklist;
-	DiscordEuroScope_Configuration::ConfigManager config;
+	std::string callsign;
+	std::string radio_callsign;
+	std::string frequency;
 };
 
-extern DiscordEuroscopeExt* pMyPlugIn;
-
-//#define DISCORDTIMERID (0xb00b)
-extern UINT_PTR DISCORDTIMERID;
-VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent, _In_ DWORD dwTime);
-
-#endif __E_KEK_H
+class ESEHandler
+{
+private:
+	static std::vector<std::string> path_to_ese;
+	static std::vector<ESEPositionItem> positions;
+public:
+	static bool LocateESEFile(std::string relative_path_to_ese);
+	static int ParsePositions(void);
+	static void GetRadioCallsigns(RadioCallsigns_t& rcs);
+};

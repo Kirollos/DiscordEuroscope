@@ -1,0 +1,3 @@
+[submodule "discord-rpc"]
+	path = discord-rpc
+	url = https://github.com/multitheftauto/discord-rpc.git

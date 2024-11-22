@@ -1,5 +1,5 @@
 /*
-	Copyright(C) 2023 Kirollos Nashaat
+	Copyright(C) 2023-2024 Kirollos Nashaat
 
 	This program is free software : you can redistribute it and /or modify
 	it under the terms of the GNU General Public License as published by
@@ -26,11 +26,7 @@
 #define new DEBUG_NEW
 #endif
 
-#ifdef EUROSCOPE31D
-#include "inc\\3.1d\\EuroScopePlugIn.h"
-#else
 #include "inc\\3.2\\EuroScopePlugIn.h"
-#endif
 #include "inc\\discord_rpc.h"
 
 //
@@ -58,8 +54,7 @@
 //		details.
 //
 
-EuroScopePlugIn::CPlugIn *pMyPlugIn = nullptr;
-DiscordEuroscopeExt* inst = nullptr;
+DiscordEuroscopeExt* pMyPlugIn = nullptr;
 UINT_PTR DISCORDTIMERID = 0;
 
 void __declspec (dllexport)
@@ -67,8 +62,8 @@ EuroScopePlugInInit(EuroScopePlugIn::CPlugIn ** ppPlugInInstance)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 	// allocate
-	inst = new DiscordEuroscopeExt;
-	*ppPlugInInstance = pMyPlugIn =	inst;
+	pMyPlugIn = new DiscordEuroscopeExt;
+	*ppPlugInInstance = pMyPlugIn;
 }
 
 void __declspec (dllexport)
@@ -76,7 +71,7 @@ EuroScopePlugInExit(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 	
-	inst->EuroInittime = 0;
+	pMyPlugIn->EuroInittime = 0;
 	Discord_Shutdown();
 	KillTimer(0, DISCORDTIMERID);
 	delete pMyPlugIn;

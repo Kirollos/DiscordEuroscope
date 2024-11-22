@@ -1,0 +1,74 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build Release
+
+on:
+#  push:
+#    branches: [ "1.3.0" ]
+#  pull_request:
+#    branches: [ "master", "1.3.0" ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+        default: 'master'
+      tag:
+        required: true
+        default: ${{github.ref}}
+      prerelease:
+        required: false
+        default: false
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Prebuild processing
+      run: |
+        $vPLUGIN_VERSION = "${{inputs.tag}}"
+        $PLUGIN_VERSION = $vPLUGIN_VERSION.Replace('v', '')
+        echo "PLUGIN_VERSION=$PLUGIN_VERSION"
+        (Get-Content .\DiscordEuroscope\DiscordEuroscope.rc) -replace '(VALUE "(?:File|Product)Version", ")(.+)"', "`${1}$PLUGIN_VERSION`"" | Set-Content .\DiscordEuroscope\DiscordEuroscope.rc
+        $x = $PLUGIN_VERSION.Replace(".", ",")
+        (Get-Content .\DiscordEuroscope\DiscordEuroscope.rc) -replace '((?:FILE|PRODUCT)VERSION ).+', "`${1}$x" | Set-Content .\DiscordEuroscope\DiscordEuroscope.rc
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:outdir=D:\out\ ${{env.SOLUTION_FILE_PATH}}
+
+    - name: release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{inputs.tag}}
+        # target_commitish: ${{github.sha}}
+        prerelease: ${{inputs.prerelease}}
+        #draft: true
+        files: D:/out/DiscordEuroscope.dll
+        

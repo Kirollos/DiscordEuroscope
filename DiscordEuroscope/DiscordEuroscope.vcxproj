@@ -30,7 +30,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Euroscope 3.2|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -39,14 +39,14 @@
     <UseOfMfc>Dynamic</UseOfMfc>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <UseOfAtl>false</UseOfAtl>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Euroscope 3.1d|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -54,7 +54,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -91,11 +91,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DiscordEuroscope.def</ModuleDefinitionFile>
+      <AdditionalDependencies>lib\3.2\discord-rpc.lib;lib\3.2\Euroscope.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -168,6 +172,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,6 +180,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\DiscordEuroscope.def</ModuleDefinitionFile>
+      <AdditionalDependencies>lib\3.2\discord-rpc-rel.lib;lib\3.2\Euroscope.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -192,8 +198,12 @@
     <None Include="res\DiscordEuroscope.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigData.cpp" />
+    <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="DiscordEuroscope.cpp" />
     <ClCompile Include="DiscordEuroscopeExt.cpp" />
+    <ClCompile Include="ESEHandler.cpp" />
+    <ClCompile Include="MessageFormatter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Euroscope 3.2|Win32'">Create</PrecompiledHeader>
@@ -203,8 +213,50 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
+    <ClInclude Include="ConfigData.h" />
+    <ClInclude Include="ConfigManager.h" />
+    <ClInclude Include="DefaultFileContent.h" />
     <ClInclude Include="DiscordEuroscope.h" />
     <ClInclude Include="DiscordEuroscopeExt.h" />
+    <ClInclude Include="ESEHandler.h" />
+    <ClInclude Include="inc\discord_register.h" />
+    <ClInclude Include="inc\discord_rpc.h" />
+    <ClInclude Include="inc\rapidjson\allocators.h" />
+    <ClInclude Include="inc\rapidjson\document.h" />
+    <ClInclude Include="inc\rapidjson\encodedstream.h" />
+    <ClInclude Include="inc\rapidjson\encodings.h" />
+    <ClInclude Include="inc\rapidjson\error\en.h" />
+    <ClInclude Include="inc\rapidjson\error\error.h" />
+    <ClInclude Include="inc\rapidjson\filereadstream.h" />
+    <ClInclude Include="inc\rapidjson\filewritestream.h" />
+    <ClInclude Include="inc\rapidjson\fwd.h" />
+    <ClInclude Include="inc\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="inc\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="inc\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="inc\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="inc\rapidjson\internal\itoa.h" />
+    <ClInclude Include="inc\rapidjson\internal\meta.h" />
+    <ClInclude Include="inc\rapidjson\internal\pow10.h" />
+    <ClInclude Include="inc\rapidjson\internal\regex.h" />
+    <ClInclude Include="inc\rapidjson\internal\stack.h" />
+    <ClInclude Include="inc\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="inc\rapidjson\internal\strtod.h" />
+    <ClInclude Include="inc\rapidjson\internal\swap.h" />
+    <ClInclude Include="inc\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="inc\rapidjson\memorybuffer.h" />
+    <ClInclude Include="inc\rapidjson\memorystream.h" />
+    <ClInclude Include="inc\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="inc\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="inc\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="inc\rapidjson\pointer.h" />
+    <ClInclude Include="inc\rapidjson\prettywriter.h" />
+    <ClInclude Include="inc\rapidjson\rapidjson.h" />
+    <ClInclude Include="inc\rapidjson\reader.h" />
+    <ClInclude Include="inc\rapidjson\schema.h" />
+    <ClInclude Include="inc\rapidjson\stream.h" />
+    <ClInclude Include="inc\rapidjson\stringbuffer.h" />
+    <ClInclude Include="inc\rapidjson\writer.h" />
+    <ClInclude Include="MessageFormatter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
