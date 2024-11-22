@@ -52,8 +52,9 @@ jobs:
         $vPLUGIN_VERSION = "${{inputs.tag}}"
         $PLUGIN_VERSION = $vPLUGIN_VERSION.Replace('v', '')
         echo "PLUGIN_VERSION=$PLUGIN_VERSION"
+        (Get-Content .\DiscordEuroScope\config.h) -replace '(#define PLUGIN_VERSION\s*)\(".+"\)', "`${1}(`"$PLUGIN_VERSION`")" | Set-Content .\DiscordEuroscope\config.h
         (Get-Content .\DiscordEuroscope\DiscordEuroscope.rc) -replace '(VALUE "(?:File|Product)Version", ")(.+)"', "`${1}$PLUGIN_VERSION`"" | Set-Content .\DiscordEuroscope\DiscordEuroscope.rc
-        $x = $PLUGIN_VERSION.Replace(".", ",")
+        $x = ($PLUGIN_VERSION.Replace(".", ",") -replace '(\d,\d,\d)(.+)', '$1')
         (Get-Content .\DiscordEuroscope\DiscordEuroscope.rc) -replace '((?:FILE|PRODUCT)VERSION ).+', "`${1}$x" | Set-Content .\DiscordEuroscope\DiscordEuroscope.rc
 
     - name: Build
