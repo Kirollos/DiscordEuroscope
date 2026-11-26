@@ -62,7 +62,7 @@ namespace
 		return parent[key].GetBool();
 	}
 
-	void FillButtons(DiscordEuroScope_Configuration::Button(&buttons)[2], const rapidjson::Value& object)
+	void FillButtons(VATPHIL_Configuration::Button(&buttons)[2], const rapidjson::Value& object)
 	{
 		if (!object.IsObject() || !object.HasMember("buttons") || !object["buttons"].IsArray())
 			return;
@@ -77,11 +77,11 @@ namespace
 				continue;
 			if (!arr[i].HasMember("url") || !arr[i]["url"].IsString())
 				continue;
-			buttons[i] = DiscordEuroScope_Configuration::Button(arr[i]["label"].GetString(), arr[i]["url"].GetString());
+			buttons[i] = VATPHIL_Configuration::Button(arr[i]["label"].GetString(), arr[i]["url"].GetString());
 		}
 	}
 
-	void FillState(DiscordEuroScope_Configuration::State& state, const rapidjson::Value& object, const std::string& context)
+	void FillState(VATPHIL_Configuration::State& state, const rapidjson::Value& object, const std::string& context)
 	{
 		state.used = true;
 		state.presence_small_image_key = RequireString(object, "presence_small_image_key", context);
@@ -94,7 +94,7 @@ namespace
 	}
 }
 
-namespace DiscordEuroScope_Configuration
+namespace VATPHIL_Configuration
 {
 	ConfigManager::ConfigManager()
 	{

@@ -19,7 +19,7 @@
 #include "inc/discord_rpc.h"
 #include "ConfigData.h"
 
-namespace DiscordEuroScope_Configuration
+namespace VATPHIL_Configuration
 {
 	ConfigData::ConfigData()
 	{

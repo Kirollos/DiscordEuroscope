@@ -83,11 +83,11 @@ int ESEHandler::ParsePositions(void)
 
 void ESEHandler::GetRadioCallsigns(RadioCallsigns_t& rcs)
 {
-	using namespace DiscordEuroScope_Configuration;
+	using namespace VATPHIL_Configuration;
 	rcs.clear();
 	for (auto& pos : positions)
 	{
-		DiscordEuroScope_Configuration::RadioCallsignElement_t element;
+		VATPHIL_Configuration::RadioCallsignElement_t element;
 		element.callsign = pos.callsign;
 		element.frequency = pos.frequency;
 		element.icao = pos.callsign.substr(0, pos.callsign.find_first_of('_'));

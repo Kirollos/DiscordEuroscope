@@ -331,15 +331,15 @@ ASALocalRun/
 
 *.dll
 *.exp
-DiscordEuroscope.lib
-DiscordEuroscope*.zip
-DiscordEuroscope/Euroscope 3.1d/
-DiscordEuroscope/Euroscope 3.2/
+VATPHIL.lib
+VATPHIL*.zip
+VATPHIL/Euroscope 3.1d/
+VATPHIL/Euroscope 3.2/
 Euroscope 3.1d/
 Euroscope 3.2/
 
 # Local plugin config (contains the Discord webhook URL)
-**/DiscordEuroscope_config.json
+**/VATPHIL_config.json
 
 # Local build/deploy staging
 /dist/

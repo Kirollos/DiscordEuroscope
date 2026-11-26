@@ -1,33 +1,54 @@
-# DiscordEuroscope 1.3.1 — VATPHIL
+# VATPHIL EuroScope plugin 1.4.0
+
+Based on [DiscordEuroscope](https://github.com/Kirollos/DiscordEuroscope) by Kirollos Nashaat. EuroScope lists it as **VATPHIL**; the file is `VATPHIL.dll`, installed in `RPHI/Plugins/VATPHIL/`. Commands work as `.vatphil …` or `.discord …`.
 
 Discord Rich Presence for EuroScope, plus optional forwarding of ATC chat to a Discord channel webhook.
 
 ## Quick start
 
-1. Put `DiscordEuroscope.dll` and `DiscordEuroscope_config.json` in the same folder — for VATPHIL that is `RPHI/Plugins/DiscordEuroscope/` in your sector package.
+1. Put `VATPHIL.dll` and `VATPHIL_config.json` in the same folder — for VATPHIL that is `RPHI/Plugins/VATPHIL/` in your sector package.
 2. The VATPHIL build already has the webhook URL baked into the DLL; there is no URL setting in the config.
 3. Start EuroScope, then type `.discord webhooktest` to check the webhook.
 
 The plugin stays quiet on startup. It only shows a message when something is wrong (bad config, or Wine without a Discord bridge).
 
+## VATPHIL portal check
+
+As soon as EuroScope loads the plugin, before you connect, it checks your sector file (see below). If you don't have the current AIRAC's `.sct`, a black screen headed *You can't connect to VATSIM* covers EuroScope, so you can't reach Connect. Run the VATPHIL Updater, then press **Try again**. The check runs again every 30 minutes while you're not connected, and each time you disconnect.
+
+When you connect to a VATPHIL position (an `RP…` or `MNL_…` callsign) on the live network, the plugin asks the VATPHIL portal whether you may control it (`GET https://portal.vatphil.com/api/plugin/check?callsign=…&sct=…`). If you may not, a black screen covers the whole monitor EuroScope is on. It has no close button, ignores Alt+F4, and lists every reason that applies:
+
+- You are currently Inactive, you are not permitted to control.
+- You have an outdated sector file, please update.
+- You currently are not endorsed for this position.
+- You are not permitted to control this position.
+
+It has two buttons. **Try again** checks again after you've fixed the problem. **Close EuroScope** closes EuroScope (which disconnects you), since EuroScope is covered; if EuroScope is still connected 20 seconds later, for example because you cancelled its save prompt, the screen comes back. The screen also goes away if you disconnect some other way.
+
+- The portal uses the same rules as its *Can I control?* page (Roster activity, rating, solo validations, endorsements, the S1/S2 approved-aerodrome hours).
+- Who you are comes from the VATSIM data feed, which lags about a minute behind a connect. The plugin asks again every 20 seconds until the portal can see you, for up to about 5 minutes.
+- **Sector file:** the plugin sends the names of the `.sct` files in your sector package (the Updater names them after the AIRAC, e.g. `2612.sct`). You need the `.sct` for the current AIRAC cycle, or a newer one; an old `.sct` left next to it doesn't matter. Staff can set a different cycle in the portal (**Settings → EuroScope plugin → AIRAC cycle the sector file must be**) for the days before a new cycle's files are out. If the plugin can't find any `.sct`, this part isn't checked.
+- Sweatbox and playback connections, observers, ATIS and `_SUP` callsigns are not checked. Supervisors and administrators are only checked for the sector file.
+- If the portal can't be reached, nobody is blocked. Staff can turn the check off in the portal's Settings.
+
 ## Configuration
 
-`DiscordEuroscope_config.json` lives next to `DiscordEuroscope.dll`. After editing it, type `.discord hotreload` in EuroScope — no restart is needed. If the file is missing, the plugin generates it.
+`VATPHIL_config.json` lives next to `VATPHIL.dll`. After editing it, type `.discord hotreload` in EuroScope — no restart is needed. If the file is missing, the plugin generates it.
 
 > The webhook URL is not in the config. It is compiled into the DLL (see below). Keep a baked DLL private.
 
 ### Webhook (ATC chat → Discord)
 
-The webhook URL is **baked into the DLL**, not read from the config. The VATPHIL build installed in `RPHI/Plugins/DiscordEuroscope/` is already baked.
+The webhook URL is **baked into the DLL**, not read from the config. The VATPHIL build installed in `RPHI/Plugins/VATPHIL/` is already baked.
 
 The public `vatphil-latest` release DLL is a template containing a placeholder, because publishing a baked DLL would publish the webhook URL. Bake the downloaded DLL before using it:
 
 ```
 WEBHOOK_URL='https://discord.com/api/webhooks/...' \
-    python3 tools/bake_webhook.py --dll DiscordEuroscope.dll --out DiscordEuroscope_baked.dll
+    python3 tools/bake_webhook.py --dll VATPHIL.dll --out VATPHIL_baked.dll
 ```
 
-Then install `DiscordEuroscope_baked.dll` as `DiscordEuroscope.dll`. The URL is passed at bake time and is not stored in this repository.
+Then install `VATPHIL_baked.dll` as `VATPHIL.dll`. The URL is passed at bake time and is not stored in this repository.
 
 Only the line format is configurable:
 
@@ -76,7 +97,7 @@ The source pictures are in `discord-assets/`. The plugin cannot upload artwork t
 
 ### Radio callsigns
 
-`radio_callsigns` maps position callsigns to the name shown in the presence details (`{rcallsign}`). The old `DiscordEuroscope_RadioCallsigns.txt` file is no longer used.
+`radio_callsigns` maps position callsigns to the name shown in the presence details (`{rcallsign}`). The old `VATPHIL_RadioCallsigns.txt` file is no longer used.
 
 ```json
 "radio_callsigns": {
@@ -95,16 +116,16 @@ Set `load_from_ese` to `true` to read position names directly from the `.ese` fi
 
 ## Building and updating
 
-The `Build VATPHIL plugin` workflow builds the 32-bit DLL on GitHub Actions. It runs automatically on pushes to the `VATPHIL` branch, or manually from the Actions tab. The finished `DiscordEuroscope.dll` is attached to the `vatphil-latest` prerelease, but it is a **template** with a webhook placeholder.
+The `Build VATPHIL plugin` workflow builds the 32-bit DLL on GitHub Actions. It runs automatically on pushes to the `VATPHIL` branch, or manually from the Actions tab. The finished `VATPHIL.dll` is attached to the `vatphil-latest` prerelease, but it is a **template** with a webhook placeholder.
 
 To install a webhook-enabled update, download the DLL and bake it first:
 
 ```
 WEBHOOK_URL='https://discord.com/api/webhooks/...' \
-    python3 tools/bake_webhook.py --dll DiscordEuroscope.dll --out DiscordEuroscope_baked.dll
+    python3 tools/bake_webhook.py --dll VATPHIL.dll --out VATPHIL_baked.dll
 ```
 
-Close EuroScope, replace `DiscordEuroscope.dll` in `RPHI/Plugins/DiscordEuroscope/` with the baked DLL, keep the config, and start EuroScope again. A DLL swap is not covered by `.discord hotreload` — only config changes are.
+Close EuroScope, replace `VATPHIL.dll` in `RPHI/Plugins/VATPHIL/` with the baked DLL, keep the config, and start EuroScope again. A DLL swap is not covered by `.discord hotreload` — only config changes are.
 
 ## Using the plugin on Mac or Linux (Wine)
 

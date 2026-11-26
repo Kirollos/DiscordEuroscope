@@ -158,7 +158,7 @@ int WebhookSender::Post(const std::string& url, const std::string& username, con
 		path.append(parts.lpszExtraInfo, parts.dwExtraInfoLength);
 
 	int http_status = 0;
-	HINTERNET session = WinHttpOpen(L"DiscordEuroscope", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+	HINTERNET session = WinHttpOpen(L"VATPHIL-EuroScope", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 	HINTERNET connection = NULL;
 	HINTERNET request = NULL;
 	if (session != NULL)

@@ -19,6 +19,8 @@
 #include "inc\\discord_rpc.h"
 #include "ConfigManager.h"
 #include "WebhookSender.h"
+#include "PortalCheck.h"
+#include "AccessPopup.h"
 #include <vector>
 #include <map>
 #include <fstream>
@@ -26,11 +28,11 @@
 #ifndef __E_KEK_H
 #define __E_KEK_H
 
-class DiscordEuroscopeExt : public EuroScopePlugIn::CPlugIn
+class VATPHILExt : public EuroScopePlugIn::CPlugIn
 {
 public:
-	DiscordEuroscopeExt();
-	virtual ~DiscordEuroscopeExt();
+	VATPHILExt();
+	virtual ~VATPHILExt();
 	virtual bool OnCompileCommand(const char* sCommandLine);
 	virtual void OnCompilePrivateChat(const char* sSenderCallsign, const char* sReceiverCallsign, const char* sChatMessage);
 	int EuroInittime;
@@ -38,8 +40,9 @@ public:
 	int CountACinRange();
 	int CountTrackedAC();
 	void CheckWineBridge(bool announce_ok);
+	void TickAccessCheck();
 	std::vector<std::string> tracklist;
-	DiscordEuroScope_Configuration::ConfigManager config;
+	VATPHIL_Configuration::ConfigManager config;
 
 private:
 	void SendToWebhook(const std::string& sender, const std::string& message);
@@ -47,9 +50,22 @@ private:
 	std::string WebhookUsername();
 	static std::string FormatChatLine(const std::string& format, const std::string& sender, const std::string& message, const std::string& time);
 	WebhookSender webhook;
+
+	// VATPHIL portal check: may the connected controller control this position?
+	void StartAccessCheck();
+	void Block(const std::string& heading, const std::vector<std::string>& lines);
+	PortalCheck portal;
+	AccessPopup popup;
+	std::string checkCallsign;     // the position we're connected to ("" before connecting: sector file only)
+	std::string checkedFor;        // the position the running/last check was for
+	time_t nextCheckAt = 0;        // 0 = no check scheduled
+	int retries = 0;
+	time_t reshowAt = 0;           // Close EuroScope was pressed: show it again then if still connected
+	std::vector<std::string> blockedLines;
+	std::string blockedHeading;
 };
 
-extern DiscordEuroscopeExt* pMyPlugIn;
+extern VATPHILExt* pMyPlugIn;
 
 //#define DISCORDTIMERID (0xb00b)
 extern UINT_PTR DISCORDTIMERID;

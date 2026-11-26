@@ -20,7 +20,7 @@
 #include <vector>
 #include <map>
 
-namespace DiscordEuroScope_Configuration
+namespace VATPHIL_Configuration
 {
 	class MessageFormatter
 	{

@@ -22,21 +22,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="DiscordEuroscope.def">
+    <None Include="VATPHIL.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="res\DiscordEuroscope.rc2">
+    <None Include="res\VATPHIL.rc2">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DiscordEuroscope.cpp">
+    <ClCompile Include="VATPHIL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DiscordEuroscopeExt.cpp">
+    <ClCompile Include="VATPHILExt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConfigManager.cpp">
@@ -51,12 +51,18 @@
     <ClCompile Include="WebhookSender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PortalCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AccessPopup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ESEHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DiscordEuroscope.h">
+    <ClInclude Include="VATPHIL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -68,7 +74,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DiscordEuroscopeExt.h">
+    <ClInclude Include="VATPHILExt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
@@ -200,12 +206,18 @@
     <ClInclude Include="WebhookSender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PortalCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AccessPopup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ESEHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DiscordEuroscope.rc">
+    <ResourceCompile Include="VATPHIL.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

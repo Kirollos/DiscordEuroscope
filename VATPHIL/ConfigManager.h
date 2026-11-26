@@ -28,7 +28,7 @@
 #include "./inc/rapidjson/ostreamwrapper.h"
 #include "./inc/rapidjson/writer.h"
 
-namespace DiscordEuroScope_Configuration
+namespace VATPHIL_Configuration
 {
 	class ConfigManager
 	{

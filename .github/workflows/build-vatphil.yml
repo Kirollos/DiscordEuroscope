@@ -3,6 +3,8 @@ name: Build VATPHIL plugin
 on:
   push:
     branches: [ "VATPHIL" ]
+  pull_request:
+    branches: [ "VATPHIL" ]
   workflow_dispatch:
 
 permissions:
@@ -23,20 +25,41 @@ jobs:
       - name: Build plugin
         shell: pwsh
         run: |
-          msbuild DiscordEuroscope.sln /m /p:Configuration=Release /p:Platform=Win32 /p:OutDir="$env:GITHUB_WORKSPACE\out\" 2>&1 | Tee-Object -FilePath build.log
+          msbuild VATPHIL.sln /m /p:Configuration=Release /p:Platform=Win32 /p:OutDir="$env:GITHUB_WORKSPACE\out\" 2>&1 | Tee-Object -FilePath build.log
           exit $LASTEXITCODE
+
+      # Open the built DLL (as data: nothing runs) and check it is what config.h says:
+      # its version resource matches PLUGIN_VERSION, and the webhook placeholder is
+      # still there for tools/bake_webhook.py to replace.
+      - name: Check the DLL
+        shell: pwsh
+        run: |
+          $dll = (Resolve-Path "out\VATPHIL.dll").Path
+          $config = Get-Content VATPHIL\config.h -Raw
+          $want = [regex]::Match($config, '#define\s+PLUGIN_VERSION\s+\("([0-9.]+)"\)').Groups[1].Value
+          if (-not $want) { throw "PLUGIN_VERSION not found in config.h" }
+          $ver = (Get-Item $dll).VersionInfo.ProductVersion
+          if (-not $ver.StartsWith($want)) { throw "VATPHIL.dll says it is '$ver', config.h says $want (update VATPHIL.rc)" }
+          $name = (Get-Item $dll).VersionInfo.ProductName
+          if ($name -ne 'VATPHIL') { throw "VATPHIL.dll product name is '$name', expected VATPHIL" }
+          $bytes = [IO.File]::ReadAllBytes($dll)
+          $text = [Text.Encoding]::ASCII.GetString($bytes)
+          if (-not $text.Contains('https://bake.invalid/')) { throw "the webhook placeholder is missing from the DLL" }
+          if (-not $text.Contains('portal.vatphil.com/api/plugin/check')) { throw "the portal check address is missing from the DLL" }
+          Write-Host "VATPHIL.dll $ver ($((Get-Item $dll).Length) bytes): $name, placeholder and portal check present"
 
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DiscordEuroscope
-          path: out/DiscordEuroscope.dll
+          name: VATPHIL
+          path: out/VATPHIL.dll
           if-no-files-found: error
 
       # The build log is published even when the build fails, so failures can be
       # diagnosed without access to the Actions log. No secrets are used here.
+      # Pull requests only build and check; pushes to VATPHIL publish.
       - name: Publish build files to rolling prerelease
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
@@ -45,8 +68,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             gh release create vatphil-latest --target ${{ github.sha }} --prerelease --title "VATPHIL plugin (latest build)" --notes "Automated build from ${{ github.sha }}"
           }
-          if (Test-Path out\DiscordEuroscope.dll) {
-            gh release upload vatphil-latest out\DiscordEuroscope.dll --clobber
+          if (Test-Path out\VATPHIL.dll) {
+            gh release upload vatphil-latest out\VATPHIL.dll --clobber
           }
           if (Test-Path build.log) {
             gh release upload vatphil-latest build.log --clobber

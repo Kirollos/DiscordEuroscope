@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9E732391-FA77-43F4-B509-C9CD6AE04196}</ProjectGuid>
-    <RootNamespace>DiscordEuroscope</RootNamespace>
+    <RootNamespace>VATPHIL</RootNamespace>
     <Keyword>MFCDLLProj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -98,7 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>.\DiscordEuroscope.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\VATPHIL.def</ModuleDefinitionFile>
       <AdditionalDependencies>lib\3.2\discord-rpc.lib;lib\3.2\Euroscope.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -125,7 +125,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ModuleDefinitionFile>.\DiscordEuroscope.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\VATPHIL.def</ModuleDefinitionFile>
       <AdditionalDependencies>lib\3.2\discord-rpc.lib;lib\3.2\Euroscope.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -150,7 +150,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>.\DiscordEuroscope.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\VATPHIL.def</ModuleDefinitionFile>
       <AdditionalDependencies>lib\3.1d\discord-rpc.lib;lib\3.1d\Euroscope.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -179,7 +179,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>.\DiscordEuroscope.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>.\VATPHIL.def</ModuleDefinitionFile>
       <AdditionalDependencies>lib\3.2\discord-rpc-rel.lib;lib\3.2\Euroscope.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -193,18 +193,20 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="DiscordEuroscope.def" />
+    <None Include="VATPHIL.def" />
     <None Include="ReadMe.txt" />
-    <None Include="res\DiscordEuroscope.rc2" />
+    <None Include="res\VATPHIL.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigData.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
-    <ClCompile Include="DiscordEuroscope.cpp" />
-    <ClCompile Include="DiscordEuroscopeExt.cpp" />
+    <ClCompile Include="VATPHIL.cpp" />
+    <ClCompile Include="VATPHILExt.cpp" />
     <ClCompile Include="ESEHandler.cpp" />
     <ClCompile Include="MessageFormatter.cpp" />
     <ClCompile Include="WebhookSender.cpp" />
+    <ClCompile Include="PortalCheck.cpp" />
+    <ClCompile Include="AccessPopup.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Euroscope 3.2|Win32'">Create</PrecompiledHeader>
@@ -217,8 +219,8 @@
     <ClInclude Include="ConfigData.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="DefaultFileContent.h" />
-    <ClInclude Include="DiscordEuroscope.h" />
-    <ClInclude Include="DiscordEuroscopeExt.h" />
+    <ClInclude Include="VATPHIL.h" />
+    <ClInclude Include="VATPHILExt.h" />
     <ClInclude Include="ESEHandler.h" />
     <ClInclude Include="inc\discord_register.h" />
     <ClInclude Include="inc\discord_rpc.h" />
@@ -262,9 +264,11 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WebhookSender.h" />
+    <ClInclude Include="PortalCheck.h" />
+    <ClInclude Include="AccessPopup.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DiscordEuroscope.rc" />
+    <ResourceCompile Include="VATPHIL.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "MessageFormatter.h"
 
-namespace DiscordEuroScope_Configuration
+namespace VATPHIL_Configuration
 {
 	void MessageFormatter::formatvector(std::string& message, const std::vector<std::string>& Dictionary)
 	{

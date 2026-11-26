@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "config.h"
-#include "DiscordEuroscopeExt.h"
+#include "VATPHILExt.h"
 #include "ConfigManager.h"
 #include "MessageFormatter.h"
 #include <ctime>
@@ -28,6 +28,9 @@
 // public release build keeps the placeholder. It is exported so the linker keeps
 // the whole block in the image.
 extern "C" __declspec(dllexport) const char g_bakedWebhookUrl[256] = WEBHOOK_BAKED_URL_PLACEHOLDER;
+
+// Close EuroScope was pressed but EuroScope is still connected this long after: show the screen again.
+static const int RESHOW_AFTER_CLOSE_S = 20;
 
 namespace
 {
@@ -83,7 +86,7 @@ static bool DiscordPipeExists()
 	return false;
 }
 
-void DiscordEuroscopeExt::CheckWineBridge(bool announce_ok)
+void VATPHILExt::CheckWineBridge(bool announce_ok)
 {
 	const char* wine_version = GetWineVersion();
 	if (wine_version == nullptr)
@@ -96,17 +99,33 @@ void DiscordEuroscopeExt::CheckWineBridge(bool announce_ok)
 		if (announce_ok)
 		{
 			msg += ". Discord bridge found.";
-			DisplayUserMessage("Message", "DiscordEuroscope", msg.c_str(), true, true, false, true, false);
+			DisplayUserMessage("Message", PLUGIN_NAME, msg.c_str(), true, true, false, true, false);
 		}
 		return;
 	}
 	msg += ". Discord can't be reached from Wine on its own, so rich presence won't show.";
-	DisplayUserMessage("Message", "DiscordEuroscope", msg.c_str(), true, true, false, true, false);
-	DisplayUserMessage("Message", "DiscordEuroscope", "Install rpc-bridge (github.com/EnderIce2/rpc-bridge) in this Wine prefix, make sure Discord is open, then type .discord hotreload", true, true, false, true, false);
+	DisplayUserMessage("Message", PLUGIN_NAME, msg.c_str(), true, true, false, true, false);
+	DisplayUserMessage("Message", PLUGIN_NAME, "Install rpc-bridge (github.com/EnderIce2/rpc-bridge) in this Wine prefix, make sure Discord is open, then type .discord hotreload", true, true, false, true, false);
 }
 
-DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, "DiscordEuroscope", PLUGIN_VERSION, "Kirollos Nashaat", "GNU GPLv3")
+VATPHILExt::VATPHILExt() : EuroScopePlugIn::CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, PLUGIN_NAME, PLUGIN_VERSION, "VATPHIL", "GNU GPLv3, based on DiscordEuroscope by Kirollos Nashaat")
 {
+	// Set first, so the portal check runs even if the config below fails to load
+	this->EuroInittime = (int)time(NULL);
+	popup.onTryAgain = [this]() { StartAccessCheck(); };
+	// The sector file is checked as soon as EuroScope loads the plugin, before anyone can connect
+	nextCheckAt = time(NULL) + 3;
+	popup.onCloseEuroScope = [this]()
+	{
+		// The screen covers EuroScope, so this is the way out. If EuroScope doesn't close (a save prompt
+		// they cancel) and is still connected, the screen comes back.
+		HWND es = AccessPopup::EuroScopeWindow();
+		popup.Close();
+		reshowAt = time(NULL) + RESHOW_AFTER_CLOSE_S;
+		if (es != NULL)
+			PostMessage(es, WM_CLOSE, 0, 0);
+	};
+
 	char DllPathFile[_MAX_PATH];
 	std::string RCPath;
 	GetModuleFileNameA(HINSTANCE(&__ImageBase), DllPathFile, sizeof(DllPathFile));
@@ -131,7 +150,7 @@ DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopeP
 				std::string error_msg = "Error: ";
 				error_msg += e2.what();
 				error_msg += ".. Halting..";
-				DisplayUserMessage("Message", "DiscordEuroscope", error_msg.c_str(), true, true, false, true, false);
+				DisplayUserMessage("Message", PLUGIN_NAME, error_msg.c_str(), true, true, false, true, false);
 				return;
 			}
 		}
@@ -139,7 +158,7 @@ DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopeP
 		{
 			std::string error_msg = "Error: ";
 			error_msg += e.what();
-			DisplayUserMessage("Message", "DiscordEuroscope", error_msg.c_str(), true, true, false, true, false);
+			DisplayUserMessage("Message", PLUGIN_NAME, error_msg.c_str(), true, true, false, true, false);
 			return;
 		}
 	}
@@ -154,18 +173,19 @@ DiscordEuroscopeExt::DiscordEuroscopeExt() : EuroScopePlugIn::CPlugIn(EuroScopeP
 }
 
 
-DiscordEuroscopeExt::~DiscordEuroscopeExt()
+VATPHILExt::~VATPHILExt()
 {
 	config.Cleanup();
 }
 
 VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent, _In_ DWORD dwTime)
 {
-	using namespace DiscordEuroScope_Configuration;
+	using namespace VATPHIL_Configuration;
 	if (pMyPlugIn == nullptr)
 		return;
 	if (pMyPlugIn->EuroInittime == 0)
 		return;
+	pMyPlugIn->TickAccessCheck();
 	if (!pMyPlugIn->config.isReady())
 	{
 		Discord_ClearPresence();
@@ -390,7 +410,7 @@ VOID CALLBACK DiscordTimer(_In_ HWND hwnd, _In_ UINT uMsg, _In_ UINT_PTR idEvent
 }
 
 
-int DiscordEuroscopeExt::CountACinRange()
+int VATPHILExt::CountACinRange()
 {
 	int count = 0;
 	EuroScopePlugIn::CRadarTarget ac = RadarTargetSelectFirst();
@@ -402,7 +422,7 @@ int DiscordEuroscopeExt::CountACinRange()
 	return count;
 }
 
-int DiscordEuroscopeExt::CountTrackedAC()
+int VATPHILExt::CountTrackedAC()
 {
 	int count = 0;
 	EuroScopePlugIn::CRadarTarget ac = RadarTargetSelectFirst();
@@ -419,13 +439,13 @@ int DiscordEuroscopeExt::CountTrackedAC()
 	return count;
 }
 
-bool DiscordEuroscopeExt::OnCompileCommand(const char* sCommandLine)
+bool VATPHILExt::OnCompileCommand(const char* sCommandLine)
 {
-	if (strcmp(sCommandLine, ".discord hotreload") == 0)
+	if (_stricmp(sCommandLine, ".vatphil hotreload") == 0 || strcmp(sCommandLine, ".discord hotreload") == 0)
 	{
-		DisplayUserMessage("Message", "DiscordEuroscope", "Resetting...", true, true, false, true, false);
+		DisplayUserMessage("Message", PLUGIN_NAME, "Resetting...", true, true, false, true, false);
 		config.Cleanup();
-		DisplayUserMessage("Message", "DiscordEuroscope", "Reloading...", true, true, false, true, false);
+		DisplayUserMessage("Message", PLUGIN_NAME, "Reloading...", true, true, false, true, false);
 		try {
 			config.Init();
 		}
@@ -433,7 +453,7 @@ bool DiscordEuroscopeExt::OnCompileCommand(const char* sCommandLine)
 		{
 			std::string error_msg = "Error: ";
 			error_msg += e.what();
-			DisplayUserMessage("Message", "DiscordEuroscope", error_msg.c_str(), true, true, false, true, false);
+			DisplayUserMessage("Message", PLUGIN_NAME, error_msg.c_str(), true, true, false, true, false);
 			return true;
 		}
 
@@ -444,14 +464,14 @@ bool DiscordEuroscopeExt::OnCompileCommand(const char* sCommandLine)
 		char dmsg[40] = { 0 };
 		int count = config.Data().RadioCallsigns.size();
 		sprintf_s(dmsg, 40, "Successfully parsed %i callsign%s", count, count == 1 ? "!" : "s!");
-		DisplayUserMessage("Message", "DiscordEuroscope", dmsg, true, true, false, true, false);
+		DisplayUserMessage("Message", PLUGIN_NAME, dmsg, true, true, false, true, false);
 		return true;
 	}
-	if (strcmp(sCommandLine, ".discord webhooktest") == 0)
+	if (_stricmp(sCommandLine, ".vatphil webhooktest") == 0 || strcmp(sCommandLine, ".discord webhooktest") == 0)
 	{
 		if (!config.isReady() || !HasBakedWebhookUrl())
 		{
-			DisplayUserMessage("Message", "DiscordEuroscope", "No webhook URL is baked into this build.", true, true, false, true, false);
+			DisplayUserMessage("Message", PLUGIN_NAME, "No webhook URL is baked into this build.", true, true, false, true, false);
 			return true;
 		}
 		TestWebhook();
@@ -460,7 +480,7 @@ bool DiscordEuroscopeExt::OnCompileCommand(const char* sCommandLine)
 	return false;
 }
 
-std::string DiscordEuroscopeExt::WebhookUsername()
+std::string VATPHILExt::WebhookUsername()
 {
 	if (GetConnectionType() != EuroScopePlugIn::CONNECTION_TYPE_NO)
 	{
@@ -472,7 +492,7 @@ std::string DiscordEuroscopeExt::WebhookUsername()
 	return "EuroScope";
 }
 
-std::string DiscordEuroscopeExt::FormatChatLine(const std::string& format, const std::string& sender, const std::string& message, const std::string& time)
+std::string VATPHILExt::FormatChatLine(const std::string& format, const std::string& sender, const std::string& message, const std::string& time)
 {
 	const std::string effective_format = format.empty() ? std::string(WEBHOOK_DEFAULT_LINE_FORMAT) : format;
 	std::string line;
@@ -503,11 +523,11 @@ std::string DiscordEuroscopeExt::FormatChatLine(const std::string& format, const
 	return line;
 }
 
-void DiscordEuroscopeExt::SendToWebhook(const std::string& sender, const std::string& message)
+void VATPHILExt::SendToWebhook(const std::string& sender, const std::string& message)
 {
 	if (!config.isReady() || message.empty() || !HasBakedWebhookUrl())
 		return;
-	const DiscordEuroScope_Configuration::ConfigData data = config.Data();
+	const VATPHIL_Configuration::ConfigData data = config.Data();
 
 	const std::string line = FormatChatLine(
 		data.webhook.line_format,
@@ -518,22 +538,22 @@ void DiscordEuroscopeExt::SendToWebhook(const std::string& sender, const std::st
 	webhook.Enqueue(BakedWebhookUrl(), WebhookUsername(), line);
 }
 
-bool DiscordEuroscopeExt::TestWebhook()
+bool VATPHILExt::TestWebhook()
 {
 	if (!config.isReady() || !HasBakedWebhookUrl())
 		return false;
-	const DiscordEuroScope_Configuration::ConfigData data = config.Data();
+	const VATPHIL_Configuration::ConfigData data = config.Data();
 
 	const std::string line = FormatChatLine(
 		data.webhook.line_format,
 		"EuroScope",
-		"Test message from DiscordEuroscope",
+		"Test message from the VATPHIL plugin",
 		CurrentUtcTime()
 	);
 	const int status = WebhookSender::TestPost(BakedWebhookUrl(), WebhookUsername(), line);
 	if (status >= 200 && status < 300)
 	{
-		DisplayUserMessage("Message", "DiscordEuroscope", "Test message posted to the webhook.", true, true, false, true, false);
+		DisplayUserMessage("Message", PLUGIN_NAME, "Test message posted to the webhook.", true, true, false, true, false);
 		return true;
 	}
 
@@ -548,11 +568,11 @@ bool DiscordEuroscopeExt::TestWebhook()
 		error += " (Discord rate limit; try again shortly).";
 	else
 		error += " (HTTP " + std::to_string(status) + ").";
-	DisplayUserMessage("Message", "DiscordEuroscope", error.c_str(), true, true, false, true, false);
+	DisplayUserMessage("Message", PLUGIN_NAME, error.c_str(), true, true, false, true, false);
 	return false;
 }
 
-void DiscordEuroscopeExt::OnCompilePrivateChat(const char* sSenderCallsign, const char* sReceiverCallsign, const char* sChatMessage)
+void VATPHILExt::OnCompilePrivateChat(const char* sSenderCallsign, const char* sReceiverCallsign, const char* sChatMessage)
 {
 	// Only the ATC channel is forwarded. Frequency chat, private messages,
 	// broadcasts and server messages must never reach the webhook.
@@ -563,4 +583,113 @@ void DiscordEuroscopeExt::OnCompilePrivateChat(const char* sSenderCallsign, cons
 	if (sSenderCallsign[0] == '\0' || sChatMessage[0] == '\0' || _stricmp(sSenderCallsign, "server") == 0)
 		return;
 	SendToWebhook(sSenderCallsign, sChatMessage);
+}
+
+// ---- VATPHIL portal check ----
+// As soon as EuroScope loads the plugin, before connecting, ask the portal whether the sector package has
+// the current AIRAC's .sct. If not, a black screen covers EuroScope, so Connect can't be reached, until
+// Try again finds it (run the Updater first) or they press Close EuroScope.
+// When someone connects to a position on the live network, ask again with the callsign: activity,
+// endorsements and rating too. The same screen stays up until Try again passes, they disconnect, or
+// they press Close EuroScope.
+// The portal being unreachable never blocks anyone who wasn't already blocked.
+
+static const int FIRST_CHECK_DELAY_S = 5;    // let EuroScope settle after connecting
+static const int WAITING_RETRY_S = 20;       // the VATSIM feed lags about a minute behind a connect
+static const int WAITING_MAX_TRIES = 15;     // ~5 minutes
+static const int FAILED_RETRY_S = 60;
+static const int FAILED_MAX_TRIES = 5;
+static const int SECTOR_RECHECK_S = 30 * 60; // a new AIRAC can start while EuroScope is open
+static const char* const HEADING_BEFORE_CONNECT = "You can't connect to VATSIM";
+
+void VATPHILExt::StartAccessCheck()
+{
+	if (portal.Busy())
+		return;
+	nextCheckAt = 0;
+	checkedFor = checkCallsign;
+	if (portal.Start(PORTAL_CHECK_URL, checkCallsign, PortalCheck::FindSectorFiles()))
+		popup.SetChecking(true);
+}
+
+void VATPHILExt::Block(const std::string& heading, const std::vector<std::string>& lines)
+{
+	blockedHeading = heading;
+	blockedLines = lines;
+	if (reshowAt == 0)
+		popup.Show(blockedHeading, blockedLines);
+}
+
+void VATPHILExt::TickAccessCheck()
+{
+	using namespace EuroScopePlugIn;
+	const time_t now = time(NULL);
+
+	// Which position are we on? Only live network connections are checked (not sweatbox or playback).
+	std::string callsign;
+	const int connection = GetConnectionType();
+	if (connection == CONNECTION_TYPE_DIRECT || connection == CONNECTION_TYPE_VIA_PROXY)
+	{
+		CController me = ControllerMyself();
+		if (me.IsValid() && me.IsController() && me.GetCallsign() != nullptr)
+			callsign = me.GetCallsign();
+	}
+	if (callsign != checkCallsign)
+	{
+		// Connected, disconnected or changed position: start over. Back to "" (disconnected): the
+		// sector file is checked again, as before connecting.
+		checkCallsign = callsign;
+		popup.Close();
+		retries = 0;
+		reshowAt = 0;
+		blockedLines.clear();
+		nextCheckAt = now + (callsign.empty() ? 3 : FIRST_CHECK_DELAY_S);
+	}
+
+	PortalCheck::Result result;
+	if (portal.Poll(result) && checkedFor == checkCallsign)
+	{
+		popup.SetChecking(false);
+		const bool beforeConnect = checkCallsign.empty();
+		switch (result.status)
+		{
+		case PortalCheck::Status::Ok:
+		case PortalCheck::Status::Waiting:
+			if (beforeConnect || result.status == PortalCheck::Status::Ok)
+			{
+				popup.Close();
+				reshowAt = 0;
+				blockedLines.clear();
+				retries = 0;
+				if (beforeConnect)
+					nextCheckAt = now + SECTOR_RECHECK_S;
+				break;
+			}
+			// Connected but the portal can't see who we are yet: nothing wrong found so far, ask again shortly
+			popup.Close();
+			blockedLines.clear();
+			if (++retries < WAITING_MAX_TRIES)
+				nextCheckAt = now + WAITING_RETRY_S;
+			break;
+		case PortalCheck::Status::Blocked:
+			Block(beforeConnect ? std::string(HEADING_BEFORE_CONNECT) : "You can't control " + WebhookSender::AnsiToUtf8(checkCallsign), result.messages);
+			break;
+		case PortalCheck::Status::Failed:
+			// Keep a screen that's already up; otherwise try again later and let them carry on meanwhile
+			if (!popup.IsOpen() && reshowAt == 0)
+				nextCheckAt = now + (++retries < FAILED_MAX_TRIES ? FAILED_RETRY_S : SECTOR_RECHECK_S);
+			break;
+		}
+	}
+
+	if (reshowAt != 0 && now >= reshowAt)
+	{
+		// Close EuroScope was pressed but EuroScope is still here
+		reshowAt = 0;
+		if (!blockedLines.empty())
+			popup.Show(blockedHeading, blockedLines);
+	}
+	if (nextCheckAt != 0 && now >= nextCheckAt)
+		StartAccessCheck();
+	popup.KeepInFront();
 }

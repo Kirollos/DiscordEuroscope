@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by DiscordEuroscope.rc
+// Used by VATPHIL.rc
 //
 
 // Next default values for new objects

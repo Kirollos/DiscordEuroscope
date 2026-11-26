@@ -14,31 +14,29 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.If not, see < https://www.gnu.org/licenses/>.
 */
-// DiscordEuroscope.h : main header file for the DiscordEuroscope DLL
-//
 
 #pragma once
+#include <string>
+#include <vector>
+#include <map>
+#include "ConfigData.h"
 
-#ifndef __AFXWIN_H__
-	#error "include 'stdafx.h' before including this file for PCH"
-#endif
+using VATPHIL_Configuration::RadioCallsigns_t;
 
-#include "resource.h"		// main symbols
-
-
-// CDiscordEuroscopeApp
-// See DiscordEuroscope.cpp for the implementation of this class
-//
-
-class CDiscordEuroscopeApp : public CWinApp
+struct ESEPositionItem
 {
-public:
-	CDiscordEuroscopeApp();
-
-// Overrides
-public:
-	virtual BOOL InitInstance();
-
-	DECLARE_MESSAGE_MAP()
+	std::string callsign;
+	std::string radio_callsign;
+	std::string frequency;
 };
 
+class ESEHandler
+{
+private:
+	static std::vector<std::string> path_to_ese;
+	static std::vector<ESEPositionItem> positions;
+public:
+	static bool LocateESEFile(std::string relative_path_to_ese);
+	static int ParsePositions(void);
+	static void GetRadioCallsigns(RadioCallsigns_t& rcs);
+};

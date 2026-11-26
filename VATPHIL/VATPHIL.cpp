@@ -14,12 +14,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.If not, see < https://www.gnu.org/licenses/>.
 */
-// DiscordEuroscope.cpp : Defines the initialization routines for the DLL.
+// VATPHIL.cpp : Defines the initialization routines for the DLL.
 //
 
 #include "stdafx.h"
-#include "DiscordEuroscope.h"
-#include "DiscordEuroscopeExt.h"
+#include "VATPHIL.h"
+#include "VATPHILExt.h"
 #include "config.h"
 
 #ifdef _DEBUG
@@ -54,7 +54,7 @@
 //		details.
 //
 
-DiscordEuroscopeExt* pMyPlugIn = nullptr;
+VATPHILExt* pMyPlugIn = nullptr;
 UINT_PTR DISCORDTIMERID = 0;
 
 void __declspec (dllexport)
@@ -62,7 +62,7 @@ EuroScopePlugInInit(EuroScopePlugIn::CPlugIn ** ppPlugInInstance)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 	// allocate
-	pMyPlugIn = new DiscordEuroscopeExt;
+	pMyPlugIn = new VATPHILExt;
 	*ppPlugInInstance = pMyPlugIn;
 }
 
@@ -78,29 +78,29 @@ EuroScopePlugInExit(void)
 }
 
 
-// CDiscordEuroscopeApp
+// CVATPHILApp
 
-BEGIN_MESSAGE_MAP(CDiscordEuroscopeApp, CWinApp)
+BEGIN_MESSAGE_MAP(CVATPHILApp, CWinApp)
 END_MESSAGE_MAP()
 
 
-// CDiscordEuroscopeApp construction
+// CVATPHILApp construction
 
-CDiscordEuroscopeApp::CDiscordEuroscopeApp()
+CVATPHILApp::CVATPHILApp()
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
 
 
-// The one and only CDiscordEuroscopeApp object
+// The one and only CVATPHILApp object
 
-CDiscordEuroscopeApp theApp;
+CVATPHILApp theApp;
 
 
-// CDiscordEuroscopeApp initialization
+// CVATPHILApp initialization
 
-BOOL CDiscordEuroscopeApp::InitInstance()
+BOOL CVATPHILApp::InitInstance()
 {
 	CWinApp::InitInstance();
 	DISCORDTIMERID = SetTimer(0, 0, UPDATE_TIMER, DiscordTimer);

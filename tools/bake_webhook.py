@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bake a Discord webhook URL into a built DiscordEuroscope.dll.
+"""Bake a Discord webhook URL into a built VATPHIL.dll.
 
 The DLL reserves a 256-byte block initialized with a placeholder. This script
 replaces that block in the PE file, so the URL is compiled into the DLL instead
@@ -7,8 +7,8 @@ of being read from the config. The URL is never stored in the repository.
 
 Usage:
     WEBHOOK_URL='https://discord.com/api/webhooks/...' \
-        python3 tools/bake_webhook.py --dll dist/DiscordEuroscope.dll \
-            --out dist/DiscordEuroscope_baked.dll
+        python3 tools/bake_webhook.py --dll dist/VATPHIL.dll \
+            --out dist/VATPHIL_baked.dll
 
 Use the environment variable form so the URL does not end up in shell history.
 """

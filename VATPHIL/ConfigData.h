@@ -25,7 +25,7 @@
 
 struct DiscordButton; // discord_rpc.h
 
-namespace DiscordEuroScope_Configuration
+namespace VATPHIL_Configuration
 {
 	typedef struct
 	{
